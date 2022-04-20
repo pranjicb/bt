@@ -5,7 +5,7 @@
 
 //CUDA kernel for triangle counting
 __global__ void tcgpu(int *sum, int n, bool *g){
-    int u = threadIdx.x; //each thread calculates neighbor intersection for one node
+    int u = blockIdx.x * blockDim.x + threadIdx.x; //each thread calculates neighbor intersection for one node
     bool *u1 = &g[n*u];
     for(int v = 0; v < u; v++){ //for all vertices in g
         if(g[n*u+v]){           //if v is a neighbor of u
@@ -58,7 +58,7 @@ int main(){
 
     //launch and time kernel
     cudaEventRecord(start);
-    tcgpu<<<1,1024>>>(sum, N, g); 
+    tcgpu<<<N/64,64>>>(sum, N, g); 
     cudaEventRecord(stop);
 
     cudaDeviceSynchronize();

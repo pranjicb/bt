@@ -11,6 +11,7 @@ int main(){
     cout << "Number of SM: " << prop.multiProcessorCount << endl;
     cout << "Maximum number of threads per SM: " << prop.maxThreadsPerMultiProcessor << endl;
     cout << "Maximum number of threads per block: " << prop.maxThreadsPerBlock << endl;
+    cout << "Maximum number of blocks per SM: " << prop.maxBlocksPerMultiProcessor << endl;
     cout << "Global memory bus bandwidth: " << prop.memoryBusWidth/1e9 << " Gb" << endl;
     cout << "Total global memory availale: " << prop.totalGlobalMem/1e9 << " GB" << endl;
     cout << "Warp size in threads: " << prop.warpSize << endl;

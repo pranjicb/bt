@@ -27,7 +27,7 @@ int main(void){
     cudaDeviceProp prop;
     cudaGetDeviceProperties(&prop, 0);
     int threadsPerBlock = 256;
-    int numBlocks = 40;
+    int numBlocks = 288;
     setint<<<numBlocks, threadsPerBlock>>>(N,x,y);
     cudaDeviceSynchronize();
 

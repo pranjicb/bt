@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <fstream>
 
-#define ll unsigned long long int
+#define T unsigned long long int
 
 ///////////////////////INPUT FILES//////////////////////////////////////
 //BIO-SC-GT
@@ -29,7 +29,7 @@ int N_SCPWTK = 217891;
 int E_SCPWTK = 5653221;
 /////////////////////////////////////////////////////////////////////////
 
-void tccpu(int n, ll *sum, std::vector<std::vector<int>> g){
+void tccpu(int n, T *sum, std::vector<std::vector<int>> g){
     #pragma omp parallel num_threads(32)
     {   
         #pragma omp for
@@ -50,15 +50,15 @@ void tccpu(int n, ll *sum, std::vector<std::vector<int>> g){
 }
 
 //CUDA kernel for triangle counting using dense bitvectors
-__global__ void tcdbgpu(ll n, ll *sum, bool *g){
-    ll u = blockIdx.x * blockDim.x + threadIdx.x; //each thread calculates neighbor intersection for one node
+__global__ void tcdbgpu(T n, T *sum, bool *g){
+    T u = blockIdx.x * blockDim.x + threadIdx.x; //each thread calculates neighbor intersection for one node
     if(u < n){
         bool *u1 = &g[n*u];
-        for(ll v = 0; v < u; v++){ //for all vertices in g
+        for(T v = 0; v < u; v++){ //for all vertices in g
             if(g[n*u+v]){           //if v is a neighbor of u
                 bool *v1 = &g[n*v];
-                for(ll i = 0; i < n-7; i+=8){
-                    ll tmp1,tmp2;
+                for(T i = 0; i < n-7; i+=8){
+                    T tmp1,tmp2;
                     memcpy(&tmp1, &u1[i], 8);
                     memcpy(&tmp2, &v1[i], 8);
                     sum[u] += __popcll(tmp1&tmp2);
@@ -70,47 +70,47 @@ __global__ void tcdbgpu(ll n, ll *sum, bool *g){
 }
 
 
-ll N = N_BIOSCGT;
-ll E = E_BIOSCGT;
+T N = N_BIOSCGT;
+T E = E_BIOSCGT;
 std::ifstream INPUT(bioscgt_path);
 
 int main(){
     bool *g;
     cudaMallocManaged(&g, N*N);
     //read input
-    for(ll i = 0; i < E; i++){
-        ll u,v;
+    for(T i = 0; i < E; i++){
+        T u,v;
         std::string w;
         INPUT >> u >> v >> w;
         g[N*u+v] = true;
     }
     //make graph undirected
-    for(ll i = 0; i < N; i++){
-        for(ll j = 0; j < N; j++){
+    for(T i = 0; i < N; i++){
+        for(T j = 0; j < N; j++){
             g[N*i+j] = g[N*i+j] | g[N*j+i];
         }
     }
     //remove self cycles
-    for(ll i = 0; i < N; i++){
+    for(T i = 0; i < N; i++){
         g[N*i+i] = 0;
     }
     //make sparse array for CPU
     std::vector<std::vector<int>> gsa;
-    for(ll i = 0; i < N; i++){
+    for(T i = 0; i < N; i++){
         std::vector<int> u;
-        for(ll j = 0; j < N; j++){
+        for(T j = 0; j < N; j++){
             if(g[N*i+j]) u.push_back(j);
         }
         gsa.push_back(u);
     }
 
     //PARALLELIZED CPU IMPLEMENTATION
-    ll *sumcpu;
-    cudaMallocManaged(&sumcpu, N*sizeof(ll));
+    T *sumcpu;
+    cudaMallocManaged(&sumcpu, N*sizeof(T));
     auto cpustart = std::chrono::steady_clock::now();
     tccpu(N,sumcpu, gsa);
-    ll rescpu = 0;
-    for(ll i = 0; i < N; i++){
+    T rescpu = 0;
+    for(T i = 0; i < N; i++){
         rescpu += sumcpu[i];
     }
     rescpu /= 3;
@@ -119,8 +119,8 @@ int main(){
 
 
     //GPU IMPLEMENTATION BASED ON DENSE BITVECTORS
-    ll *sumgpudb;
-    cudaMallocManaged(&sumgpudb, N*sizeof(ll));
+    T *sumgpudb;
+    cudaMallocManaged(&sumgpudb, N*sizeof(T));
     cudaEvent_t dbstart, dbstop;
     cudaEventCreate(&dbstart);
     cudaEventCreate(&dbstop);
@@ -135,8 +135,8 @@ int main(){
 
     cudaDeviceSynchronize();
     cudaEventSynchronize(dbstop);
-    ll resgpudb = 0;
-    for(ll i = 0; i < N; i++){
+    T resgpudb = 0;
+    for(T i = 0; i < N; i++){
         resgpudb += sumgpudb[i];
     }
     resgpudb /= 3;

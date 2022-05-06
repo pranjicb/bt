@@ -1,0 +1,18 @@
+Algorithm for sparse array implementation for TC on GPU
+
+Edges1 <- List with all v for all edges u -> v in E 
+Edges2
+Nodes <- List with all u for all edges u -> v in E
+sum <- list of size E that stores the result for each thread
+
+Launch |E| CUDA threads:
+    for each thread t:
+        v <- Edges2[t]
+        u <- Edges1[t]
+        lookup table for location of adjacency list of v and u
+        if(v < u)
+            deg(u), deg(v) <- Nodes[u], Nodes[v]
+            u_start*, v_start* <- &Edges[u'], &Edges[v']
+            u_end* <- u_start* + Nodes[u]
+            v_end* <- v_start* + Nodes[v]
+            sum[t] <- sum[t] + intersectCount(u_start*,u_end*,v_start*,v_end*)

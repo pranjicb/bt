@@ -54,10 +54,10 @@ __global__ void tcdbgpu(T n, T *sum, bool *g){
     T u = blockIdx.x * blockDim.x + threadIdx.x; //each thread calculates neighbor intersection for one node
     if(u < n){
         bool *u1 = &g[n*u];
-        for(T v = 0; v < u; v++){ //for all vertices in g
+        for(int v = 0; v < u; v++){ //for all vertices in g
             if(g[n*u+v]){           //if v is a neighbor of u
                 bool *v1 = &g[n*v];
-                for(T i = 0; i < n-7; i+=8){
+                for(int i = 0; i < n-7; i+=8){
                     T tmp1,tmp2;
                     memcpy(&tmp1, &u1[i], 8);
                     memcpy(&tmp2, &v1[i], 8);
@@ -66,7 +66,6 @@ __global__ void tcdbgpu(T n, T *sum, bool *g){
             }
         }
     }
-    
 }
 
 

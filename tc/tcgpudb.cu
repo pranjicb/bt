@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <fstream>
+#include <string>
 
 #define T unsigned long long int
 
@@ -50,8 +51,8 @@ void tccpu(int n, T *sum, std::vector<std::vector<int>> g){
 }
 
 //CUDA kernel for triangle counting using dense bitvectors
-__global__ void tcdbgpu(T n, T *sum, bool *g){
-    T u = blockIdx.x * blockDim.x + threadIdx.x; //each thread calculates neighbor intersection for one node
+__global__ void tcdbgpu(int n, T *sum, bool *g){
+    int u = blockIdx.x * blockDim.x + threadIdx.x; //each thread calculates neighbor intersection for one node
     if(u < n){
         bool *u1 = &g[n*u];
         for(int v = 0; v < u; v++){ //for all vertices in g
@@ -68,36 +69,61 @@ __global__ void tcdbgpu(T n, T *sum, bool *g){
     }
 }
 
+//CUDA kernel for triangle counting using dense bitvectors
+__global__ void tcdbgpu2(int n1, int n2, T *sum, T *g){
+    for(int i = 0; i < n1; i++){
+        int count = 0;
+        for(int j = 0; j < n2; j++){
+            T tmp1 = g[n2*i+j];
+            for(int k = 0; k < 64; k++){
+                if(tmp1&(1>>k)!=0){
+                    int v = 64*j+k;
+                    for(int l = 0; l < n2; l++){
+                        T tmp2 = g[n2*i+l];
+                        //T tmp3 = g[n2*v+l];
+                        T tmp3 = 0;
+                        count += __popcll(tmp2&tmp3);
+                    }
+                }
+            }
+        }
+        sum[i] += count;
+    }
+}
 
-T N = N_BIOSCGT;
-T E = E_BIOSCGT;
+int numbits = sizeof(T) * 8;
+unsigned int N = N_BIOSCGT;
+unsigned int E = E_BIOSCGT;
 std::ifstream INPUT(bioscgt_path);
 
 int main(){
     bool *g;
     cudaMallocManaged(&g, N*N);
     //read input
-    for(T i = 0; i < E; i++){
-        T u,v;
+    for(int i = 0; i < E; i++){
+        unsigned int u,v;
         std::string w;
         INPUT >> u >> v >> w;
         g[N*u+v] = true;
     }
     //make graph undirected
-    for(T i = 0; i < N; i++){
-        for(T j = 0; j < N; j++){
+    for(int i = 0; i < N; i++){
+        for(int j = 0; j < N; j++){
             g[N*i+j] = g[N*i+j] | g[N*j+i];
         }
     }
     //remove self cycles
-    for(T i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){
         g[N*i+i] = 0;
     }
+
+
+    
     //make sparse array for CPU
     std::vector<std::vector<int>> gsa;
-    for(T i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){
         std::vector<int> u;
-        for(T j = 0; j < N; j++){
+        for(int j = 0; j < N; j++){
             if(g[N*i+j]) u.push_back(j);
         }
         gsa.push_back(u);
@@ -109,7 +135,7 @@ int main(){
     auto cpustart = std::chrono::steady_clock::now();
     tccpu(N,sumcpu, gsa);
     T rescpu = 0;
-    for(T i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){
         rescpu += sumcpu[i];
     }
     rescpu /= 3;
@@ -135,17 +161,22 @@ int main(){
     cudaDeviceSynchronize();
     cudaEventSynchronize(dbstop);
     T resgpudb = 0;
-    for(T i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){
         resgpudb += sumgpudb[i];
     }
     resgpudb /= 3;
     float dbkerneltime = 0;
     cudaEventElapsedTime(&dbkerneltime, dbstart, dbstop);
 
+    
+
     std::cout << "TRUE RES: " << rescpu << std::endl;
     std::cout << "GPU RES: " << resgpudb << std::endl;
     std::cout << "CPU TIME: " << cputime.count() << "s" << std::endl;
     std::cout << "GPU TIME: " << dbkerneltime/1000.0 << "s" << std::endl;
+    std::cout << N << " " << E << std::endl;
+
+
     cudaFree(g);
     cudaFree(sumcpu);
     cudaFree(sumgpudb);

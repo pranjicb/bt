@@ -29,19 +29,35 @@ int N_SCPWTK = 217891;
 int E_SCPWTK = 5653221;
 /////////////////////////////////////////////////////////////////////////
 
-__device__ T intersectCount(T lu, T ru, T lv, T rv, T *edges1, T *edges2, T *nodes){
+__device__ int binarySearch(T x, T l, T r, T *arr){
+    while(l <= r){
+        T m = l + (r-l) / 2;
+        if(arr[m] == x){
+            return x;
+        }
+        if(arr[m] < x){
+            l = m + 1;
+        }
+        else{
+            r = m - 1;
+        }
+    }
+    return -1;
+}
+
+__device__ T intersectCount(T lu, T ru, T lv, T rv, T *edges2){
     T count = 0;
     for(int i = lu; i < ru; i++){
-        for(int j = lv; j < rv; j++){
-            if(edges2[i] == edges2[j]) count++;
-        }
+        T u = edges2[i];
+        if(binarySearch(u, lv, rv, edges2) == u) count++;
     }
     return count;
 }
 
+
 __global__ void tcgpusa(T N, T E, T *nodes, T *edges1, T*edges2, T *sum){
     T t = blockIdx.x * blockDim.x + threadIdx.x;
-    if(true){
+    if(t < E){
         T u = edges1[t];
         T v = edges2[t];
         T counter = 0;
@@ -64,10 +80,10 @@ __global__ void tcgpusa(T N, T E, T *nodes, T *edges1, T*edges2, T *sum){
             T sizeU = ru-lu;
             T sizeV = rv-lu;
             if(sizeU < sizeV){
-                counter += intersectCount(lu,ru,lv,rv,edges1,edges2,nodes);
+                counter += intersectCount(lu,ru,lv,rv,edges2);
             }
             else{
-                counter += intersectCount(lv,rv,lu,ru,edges1,edges2,nodes);
+                counter += intersectCount(lv,rv,lu,ru,edges2);
             }
             
         }
@@ -75,6 +91,42 @@ __global__ void tcgpusa(T N, T E, T *nodes, T *edges1, T*edges2, T *sum){
 
     }
 }
+
+__global__ void tcgpusa2(T N, T E, T *nodes, T *edges1, T*edges2, T *sum){
+    int u = blockIdx.x; //launch 1 warp per node
+    T lu = nodes[u]; 
+    T ru;
+    if(u != N-1){
+        ru = nodes[u+1];
+    }
+    else{
+        ru = E-1;
+    }
+    T sizeU = ru-lu;
+    for(int i = threadIdx.x; i < sizeU; i+=32){
+        T v = edges2[lu+i];
+        T lv = nodes[v];
+        T rv;
+        if(v != N-1){
+            rv = nodes[v+1];
+        }
+        else{
+            rv = E-1;
+        }
+        T sizeV = rv-lv;
+        T counter = 0;
+        if(u < v){
+            if(sizeU < sizeV){
+                counter = intersectCount(lu,ru,lv,rv,edges2);
+            }
+            else{
+                counter = intersectCount(lv,rv,lu,ru,edges2);
+            }
+        }
+        sum[lu+i] = counter;
+    }
+}
+
 
 void tccpu(int n, T *sum, std::vector<std::vector<int>> g){
     #pragma omp parallel num_threads(32)
@@ -197,7 +249,7 @@ int main(){
     cudaEventCreate(&sastart);
     cudaEventCreate(&sastop);
     
-    int threadsPerBlock = 64;
+    int threadsPerBlock = 32;
     int blocksPerGrid = (E + threadsPerBlock - 1)/ threadsPerBlock;
 
     //launch and time kernel
@@ -215,11 +267,46 @@ int main(){
     float sakerneltime = 0;
     cudaEventElapsedTime(&sakerneltime, sastart, sastop);
 
+
+    /////////////////////////////////////////////////////////
+    
+    T *sumgpusa2;
+    cudaMallocManaged(&sumgpusa2, E*sizeof(T));
+    for(int i = 0; i < E; i++){
+        sumgpusa2[i] = 0;
+    }
+    cudaEvent_t sastart2, sastop2;
+    cudaEventCreate(&sastart2);
+    cudaEventCreate(&sastop2);
+    
+    int threadsPerBlock2 = 32;
+    int blocksPerGrid2 = (32*N + threadsPerBlock2 - 1)/ threadsPerBlock2;
+
+    //launch and time kernel
+    cudaEventRecord(sastart2);
+    tcgpusa2<<<blocksPerGrid2, threadsPerBlock2>>>(N, E, nodes, edges1, edges2, sumgpusa2); 
+    cudaEventRecord(sastop2);
+
+    cudaDeviceSynchronize();
+    cudaEventSynchronize(sastop2);
+    T resgpusa2 = 0;
+    for(T i = 0; i < E; i++){
+        resgpusa2 += sumgpusa2[i];
+    }
+    resgpusa2 /= 3;
+    float sakerneltime2 = 0;
+    cudaEventElapsedTime(&sakerneltime2, sastart2, sastop2);
+    /////////////////////////////////////////////////////////
+
     std::cout << "TRUE RES: " << rescpu << std::endl;
     std::cout << "GPU SA RES: " << resgpusa << std::endl;
     std::cout << "CPU TIME: " << cputime.count() << "s" << std::endl;
     std::cout << "GPU SA TIME: " << sakerneltime/1000.0 << "s" << std::endl;
-    std::cout << "CPU slow res: " << count_triangles(N,g)/6 << std::endl; 
+    std::cout << "GPU speedup:  " << cputime.count()/(sakerneltime/1000.0) << "x" <<  std::endl; 
+    std::cout << "GPU SA2 RES: " << resgpusa2 << std::endl;
+    std::cout << "GPU SA2 TIME: " << sakerneltime2/1000.0 << "s" << std::endl;
+    std::cout << "GPU2 speedup:  " << cputime.count()/(sakerneltime2/1000.0) << "x" <<  std::endl; 
+
 
     cudaFree(sumgpusa);
     cudaFree(edges1);

@@ -6,9 +6,14 @@
 #include <fstream>
 #include <string>
 
-#define T unsigned long long int
+#define T u_int32_t
 
 ///////////////////////INPUT FILES//////////////////////////////////////
+//BIO-CE-PG
+std::string biocepg_path = "../../../datasets/biological/bio-SC-GT/bio-SC-GT.edges";
+int N_BIOCEPG = 1716; 
+int E_BIOCEPG = 33987; 
+
 //BIO-SC-GT
 std::string bioscgt_path = "../../../datasets/biological/bio-SC-GT/bio-SC-GT.edges";
 int N_BIOSCGT = 1716; 
@@ -28,7 +33,40 @@ int E_C500 = 112332;
 std::string scpwtk_path = "../../../datasets/scientific/sc-pwtk/sc-pwtk.mtx";
 int N_SCPWTK = 217891;
 int E_SCPWTK = 5653221;
+
+//BIO-MOUSE-GENE
+std::string biomousegene_path = "../../../datasets/biological/bio-mouse-gene/bio-mouse-gene.edges";
+int N_BIOMOUSEGENE = 45101;
+int E_BIOMOUSEGENE = 14506196;
 /////////////////////////////////////////////////////////////////////////
+
+
+__device__ T intersectCount(int n, T *u, T *v){
+    T count = 0ULL;
+    for(int i = 0; i < n; i++){
+        count += __popcll(u[i] & v[i]);
+    }
+    return count;
+}
+
+__global__ void tcgpudb(int n1, int n2, T *sum, T *g, int numbits){
+    int u = blockIdx.x;
+    int tid = threadIdx.x;
+    int gtid = blockIdx.x * blockDim.x + tid;
+    T u_neigh = u*n2;
+    for(int i = 0; i < n2; i++){
+        T tmp1 = g[u_neigh+i];
+        T tmp2 = (1ULL << tid);
+        T tmp3 = tmp1 & tmp2;
+        T v = i*numbits+tid;
+        T v_neigh = v*n2;
+        if(tmp2 == tmp3 && u < v){
+            T count = intersectCount(n2, &g[u_neigh], &g[v_neigh]);
+            sum[u*n1+v] += count;
+        }
+        
+    }
+}
 
 void tccpu(int n, T *sum, std::vector<std::vector<int>> g){
     #pragma omp parallel num_threads(32)
@@ -50,134 +88,133 @@ void tccpu(int n, T *sum, std::vector<std::vector<int>> g){
 
 }
 
-//CUDA kernel for triangle counting using dense bitvectors
-__global__ void tcdbgpu(int n, T *sum, bool *g){
-    int u = blockIdx.x * blockDim.x + threadIdx.x; //each thread calculates neighbor intersection for one node
-    if(u < n){
-        bool *u1 = &g[n*u];
-        for(int v = 0; v < u; v++){ //for all vertices in g
-            if(g[n*u+v]){           //if v is a neighbor of u
-                bool *v1 = &g[n*v];
-                for(int i = 0; i < n-7; i+=8){
-                    T tmp1,tmp2;
-                    memcpy(&tmp1, &u1[i], 8);
-                    memcpy(&tmp2, &v1[i], 8);
-                    sum[u] += __popcll(tmp1&tmp2);
-                }
-            }
-        }
-    }
-}
+/*void readGraph(int n, int e, std::string path, bool *g){
 
-//CUDA kernel for triangle counting using dense bitvectors
-__global__ void tcdbgpu2(int n1, int n2, T *sum, T *g){
-    for(int i = 0; i < n1; i++){
-        int count = 0;
-        for(int j = 0; j < n2; j++){
-            T tmp1 = g[n2*i+j];
-            for(int k = 0; k < 64; k++){
-                if(tmp1&(1>>k)!=0){
-                    int v = 64*j+k;
-                    for(int l = 0; l < n2; l++){
-                        T tmp2 = g[n2*i+l];
-                        //T tmp3 = g[n2*v+l];
-                        T tmp3 = 0;
-                        count += __popcll(tmp2&tmp3);
-                    }
-                }
-            }
-        }
-        sum[i] += count;
-    }
-}
+}*/
+
 
 int numbits = sizeof(T) * 8;
-unsigned int N = N_BIOSCGT;
-unsigned int E = E_BIOSCGT;
-std::ifstream INPUT(bioscgt_path);
+unsigned int N = N_BIOMOUSEGENE;
+unsigned int E = E_BIOMOUSEGENE;
+std::ifstream INPUT(biomousegene_path);
 
 int main(){
     bool *g;
     cudaMallocManaged(&g, N*N);
+    for(int i = 0; i < N*N; i++){
+        g[i] = false;
+    }
+    
     //read input
     for(int i = 0; i < E; i++){
-        unsigned int u,v;
+        int u,v;
         std::string w;
         INPUT >> u >> v >> w;
+        u--;
+        v--;
         g[N*u+v] = true;
-    }
-    //make graph undirected
-    for(int i = 0; i < N; i++){
-        for(int j = 0; j < N; j++){
-            g[N*i+j] = g[N*i+j] | g[N*j+i];
-        }
+        g[N*v+u] = true;
     }
     //remove self cycles
-    for(int i = 0; i < N; i++){
+    for(T i = 0; i < N; i++){
         g[N*i+i] = 0;
     }
+    T count = 0;
+    for(T i = 0; i < N*N; i++){
+        if(g[i]) count++;
+    }
+    E = count;
+
+    int N2;
+    if(N % numbits == 0){
+        N2 = N / numbits;
+    }
+    else{
+        N2 = (N + numbits - 1) / numbits;
+    }
+
+    T *g2;
+    cudaMallocManaged(&g2, N*N2*sizeof(T));
+    for(int i = 0; i < N*N2; i++){
+        g2[i] = 0;
+    }
+
+    for(int i = 0; i < N; i++){
+        int index = 0;
+        for(int j = 0; j < N2; j++){
+            std::string s = "";
+            for(int k = 0; k < 32; k++){
+                std::string s1 = "0";
+                if(index < N){
+                    if(g[N*i+index]){
+                        s1 = "1";
+                    }
+                    index++;
+                }
+                s.append(s1);
+            }
+            std::reverse(s.begin(), s.end());
+            g2[N2*i+j] = std::stoull(s,nullptr,2);
+        }
+    }
+
+    T *sumdb;
+    cudaMallocManaged(&sumdb, N*N*sizeof(T));
+    for(int i = 0; i < N*N; i++){
+        sumdb[i] = 0;
+    }
+    cudaEvent_t dbstart, dbend;
+    cudaEventCreate(&dbstart);
+    cudaEventCreate(&dbend);
+
+    int threadsPerBlockdb = numbits;
+    int blocksPerGriddb = (threadsPerBlockdb*N + threadsPerBlockdb - 1) / threadsPerBlockdb;
+
+    cudaEventRecord(dbstart);
+    tcgpudb<<<blocksPerGriddb, threadsPerBlockdb>>>(N,N2,sumdb,g2, numbits);
+    cudaEventRecord(dbend);
+
+    cudaDeviceSynchronize();
+    cudaEventSynchronize(dbend);
+    T resdb = 0;
+    for(int i = 0; i < N*N; i++){
+        resdb += sumdb[i];
+    }
+    resdb /= 3;
+    float timedb = 0;
+    cudaEventElapsedTime(&timedb, dbstart, dbend);
 
 
-    
     //make sparse array for CPU
     std::vector<std::vector<int>> gsa;
-    for(int i = 0; i < N; i++){
+    for(T i = 0; i < N; i++){
         std::vector<int> u;
-        for(int j = 0; j < N; j++){
+        for(T j = 0; j < N; j++){
             if(g[N*i+j]) u.push_back(j);
         }
         gsa.push_back(u);
     }
 
-    //PARALLELIZED CPU IMPLEMENTATION
+    //PARATELIZED CPU IMPLEMENTATION
     T *sumcpu;
     cudaMallocManaged(&sumcpu, N*sizeof(T));
+    for(int i = 0; i < N; i++){
+        sumcpu[i] = 0;
+    }
     auto cpustart = std::chrono::steady_clock::now();
     tccpu(N,sumcpu, gsa);
     T rescpu = 0;
-    for(int i = 0; i < N; i++){
+    for(T i = 0; i < N; i++){
         rescpu += sumcpu[i];
     }
     rescpu /= 3;
     auto cpuend = std::chrono::steady_clock::now();
     std::chrono::duration<double> cputime = cpuend-cpustart;
 
-
-    //GPU IMPLEMENTATION BASED ON DENSE BITVECTORS
-    T *sumgpudb;
-    cudaMallocManaged(&sumgpudb, N*sizeof(T));
-    cudaEvent_t dbstart, dbstop;
-    cudaEventCreate(&dbstart);
-    cudaEventCreate(&dbstop);
-    
-    int threadsPerBlock = 64;
-    int blocksPerGrid = (N + threadsPerBlock - 1)/ threadsPerBlock;
-
-    //launch and time kernel
-    cudaEventRecord(dbstart);
-    tcdbgpu<<<blocksPerGrid, threadsPerBlock>>>(N, sumgpudb, g); 
-    cudaEventRecord(dbstop);
-
-    cudaDeviceSynchronize();
-    cudaEventSynchronize(dbstop);
-    T resgpudb = 0;
-    for(int i = 0; i < N; i++){
-        resgpudb += sumgpudb[i];
-    }
-    resgpudb /= 3;
-    float dbkerneltime = 0;
-    cudaEventElapsedTime(&dbkerneltime, dbstart, dbstop);
-
-    
-
-    std::cout << "TRUE RES: " << rescpu << std::endl;
-    std::cout << "GPU RES: " << resgpudb << std::endl;
-    std::cout << "CPU TIME: " << cputime.count() << "s" << std::endl;
-    std::cout << "GPU TIME: " << dbkerneltime/1000.0 << "s" << std::endl;
-    std::cout << N << " " << E << std::endl;
-
-
-    cudaFree(g);
-    cudaFree(sumcpu);
-    cudaFree(sumgpudb);
+  
+    std::cout << "GPU DB RES:   " << resdb << std::endl;
+    std::cout << "CPU RES:      " << rescpu << std::endl;
+    std::cout << "GPU DB TIME:  " << timedb/1000.0 << "s" << std::endl;
+    std::cout << "CPU TIME:     " << cputime.count() << "s" << std::endl;
+    std::cout << "DB speedup:   " << cputime.count()/(timedb/1000.0) << "x" << std::endl;
 }

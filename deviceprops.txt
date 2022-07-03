@@ -1,0 +1,14 @@
+Name: NVIDIA GeForce RTX 3070 Ti
+Compute capability: 8.6
+clock frequency: 1.83 GHz
+L2 cache size in bytes: 4194304
+Number of SM: 48
+Maximum number of threads per SM: 1536
+Maximum number of threads per block: 1024
+Maximum number of blocks per SM: 16
+Global memory bus bandwidth: 2.56e-07 Gb
+Total global memory availale: 8.36678 GB
+Warp size in threads: 32
+Reserved shared memory per block in bytes: 1024
+Shared memory available per block in bytes: 49152
+Shared memory per multiprocessor in bytes: 102400

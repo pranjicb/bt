@@ -195,26 +195,8 @@ int main(){
         gsa.push_back(u);
     }
 
-    //PARATELIZED CPU IMPLEMENTATION
-    T *sumcpu;
-    cudaMallocManaged(&sumcpu, N*sizeof(T));
-    for(int i = 0; i < N; i++){
-        sumcpu[i] = 0;
-    }
-    auto cpustart = std::chrono::steady_clock::now();
-    tccpu(N,sumcpu, gsa);
-    T rescpu = 0;
-    for(T i = 0; i < N; i++){
-        rescpu += sumcpu[i];
-    }
-    rescpu /= 3;
-    auto cpuend = std::chrono::steady_clock::now();
-    std::chrono::duration<double> cputime = cpuend-cpustart;
 
   
     std::cout << "GPU DB RES:   " << resdb << std::endl;
-    std::cout << "CPU RES:      " << rescpu << std::endl;
     std::cout << "GPU DB TIME:  " << timedb/1000.0 << "s" << std::endl;
-    std::cout << "CPU TIME:     " << cputime.count() << "s" << std::endl;
-    std::cout << "DB speedup:   " << cputime.count()/(timedb/1000.0) << "x" << std::endl;
 }

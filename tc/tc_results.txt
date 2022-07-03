@@ -1,0 +1,630 @@
+#############################################
+#############################################
+# Graph: BIO-CE-PG
+# Nodes: 1871
+# Edges: 47754
+# CPU TIME: 0.00625852s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000269082s, Speedup: 23.2588x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000267373s, Speedup: 23.4075x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000250419s, Speedup: 24.9922x, theoretical occupancy: 1
+# 128 threads per block: 0.000255891s, Speedup: 24.4577x, theoretical occupancy: 1
+# 256 threads per block: 0.000257229s, Speedup: 24.3306x, theoretical occupancy: 1
+# 512 threads per block: 0.000146829s, Speedup: 42.6246x, theoretical occupancy: 1          <== BEST
+# 1024 threads per block: 0.000330035s, Speedup: 18.9632x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.00158015s, Speedup: 3.9607x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00154729s, Speedup: 4.04483x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00154484s, Speedup: 4.05125x, theoretical occupancy: 1
+# 128 threads per block: 0.00154268s, Speedup: 4.05691x, theoretical occupancy: 1
+# 256 threads per block: 0.00154947s, Speedup: 4.03915x, theoretical occupancy: 1
+# 512 threads per block: 0.0017107s, Speedup: 3.65845x, theoretical occupancy: 1
+# 1024 threads per block: 0.00166147s, Speedup: 3.76687x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000945274s, Speedup: 6.62086x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000944102s, Speedup: 6.62907x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000939155s, Speedup: 6.66399x, theoretical occupancy: 1
+# 128 threads per block: 0.00094105s, Speedup: 6.65057x, theoretical occupancy: 1
+# 256 threads per block: 0.000954618s, Speedup: 6.55605x, theoretical occupancy: 1
+# 512 threads per block: 0.0012007s, Speedup: 5.2124x, theoretical occupancy: 1
+# 1024 threads per block: 0.00110012s, Speedup: 5.68893x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000259117s, Speedup: 24.1533x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000253741s, Speedup: 24.665x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000264947s, Speedup: 23.6218x, theoretical occupancy: 1
+# 128 threads per block: 0.000150835s, Speedup: 41.4924x, theoretical occupancy: 1
+# 256 threads per block: 0.000234189s, Speedup: 26.7243x, theoretical occupancy: 1
+# 512 threads per block: 0.000262483s, Speedup: 23.8435x, theoretical occupancy: 1
+# 1024 threads per block: 0.000251546s, Speedup: 24.8803x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-DM-CX
+# Nodes: 4040
+# Edges: 76717
+# CPU TIME: 0.00477213s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000218778s, Speedup: 21.8127x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000243622s, Speedup: 19.5882x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000226291s, Speedup: 21.0884x, theoretical occupancy: 1
+# 128 threads per block: 0.000245811s, Speedup: 19.4138x, theoretical occupancy: 1
+# 256 threads per block: 0.000288531s, Speedup: 16.5394x, theoretical occupancy: 1
+# 512 threads per block: 0.000155136s, Speedup: 30.7609x, theoretical occupancy: 1
+# 1024 threads per block: 0.000124787s, Speedup: 38.2421x, theoretical occupancy: 0.6667    <== BEST
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000413203s, Speedup: 11.5491x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000393171s, Speedup: 12.1375x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000404339s, Speedup: 11.8023x, theoretical occupancy: 1
+# 128 threads per block: 0.000388301s, Speedup: 12.2898x, theoretical occupancy: 1
+# 256 threads per block: 0.000368205s, Speedup: 12.9605x, theoretical occupancy: 1
+# 512 threads per block: 0.000370253s, Speedup: 12.8888x, theoretical occupancy: 1
+# 1024 threads per block: 0.000275795s, Speedup: 17.3032x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000645299s, Speedup: 7.39522x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000443674s, Speedup: 10.7559x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000619859s, Speedup: 7.69873x, theoretical occupancy: 1
+# 128 threads per block: 0.000450157s, Speedup: 10.601x, theoretical occupancy: 1
+# 256 threads per block: 0.000504416s, Speedup: 9.4607x, theoretical occupancy: 1
+# 512 threads per block: 0.000497363s, Speedup: 9.59486x, theoretical occupancy: 1
+# 1024 threads per block: 0.00052711s, Speedup: 9.05338x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.00024096s, Speedup: 19.8047x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000239136s, Speedup: 19.9557x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000152166s, Speedup: 31.3613x, theoretical occupancy: 1
+# 128 threads per block: 0.000148019s, Speedup: 32.2399x, theoretical occupancy: 1
+# 256 threads per block: 0.000132166s, Speedup: 36.107x, theoretical occupancy: 1
+# 512 threads per block: 0.000208634s, Speedup: 22.8733x, theoretical occupancy: 1
+# 1024 threads per block: 0.000267181s, Speedup: 17.8611x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-HS-LC
+# Nodes: 4227
+# Edges: 39484
+# CPU TIME: 0.0020165s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000323315s, Speedup: 6.23695x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000223757s, Speedup: 9.01202x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000200115s, Speedup: 10.0767x, theoretical occupancy: 1
+# 128 threads per block: 0.000220083s, Speedup: 9.16244x, theoretical occupancy: 1
+# 256 threads per block: 0.000193318s, Speedup: 10.431x, theoretical occupancy: 1
+# 512 threads per block: 9.91232e-05s, Speedup: 20.3434x, theoretical occupancy: 1
+# 1024 threads per block: 0.000182874s, Speedup: 11.0267x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.00047527s, Speedup: 4.24285x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000295142s, Speedup: 6.8323x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000390061s, Speedup: 5.16971x, theoretical occupancy: 1
+# 128 threads per block: 0.000391373s, Speedup: 5.15238x, theoretical occupancy: 1
+# 256 threads per block: 0.000390765s, Speedup: 5.16039x, theoretical occupancy: 1
+# 512 threads per block: 0.000394355s, Speedup: 5.11341x, theoretical occupancy: 1
+# 1024 threads per block: 0.00039625s, Speedup: 5.08896x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000431104s, Speedup: 4.67753x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000411219s, Speedup: 4.90371x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000427174s, Speedup: 4.72055x, theoretical occupancy: 1
+# 128 threads per block: 0.00039545s, Speedup: 5.09926x, theoretical occupancy: 1
+# 256 threads per block: 0.000304922s, Speedup: 6.61318x, theoretical occupancy: 1
+# 512 threads per block: 0.000549197s, Speedup: 3.67173x, theoretical occupancy: 1
+# 1024 threads per block: 0.000366874s, Speedup: 5.49644x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.00021024s, Speedup: 9.59142x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000206016s, Speedup: 9.78807x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000249984s, Speedup: 8.06652x, theoretical occupancy: 1
+# 128 threads per block: 0.000285734s, Speedup: 7.05725x, theoretical occupancy: 1
+# 256 threads per block: 9.27488e-05s, Speedup: 21.7415x, theoretical occupancy: 1
+# 512 threads per block: 0.000176659s, Speedup: 11.4146x, theoretical occupancy: 1
+# 1024 threads per block: 8.51584e-05s, Speedup: 23.6794x, theoretical occupancy: 0.6667  <== BEST
+#############################################
+#############################################
+# Graph: BIO-SC-GT
+# Nodes: 1716
+# Edges: 33987
+# CPU TIME: 0.00204809s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000225146s, Speedup: 9.09674x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000201178s, Speedup: 10.1805x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000191149s, Speedup: 10.7146x, theoretical occupancy: 1
+# 128 threads per block: 0.000207123s, Speedup: 9.88827x, theoretical occupancy: 1
+# 256 threads per block: 0.000180218s, Speedup: 11.3645x, theoretical occupancy: 1
+# 512 threads per block: 0.00010608s, Speedup: 19.307x, theoretical occupancy: 1          <== BEST
+# 1024 threads per block: 0.000188256s, Speedup: 10.8793x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000631821s, Speedup: 3.24157x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000632224s, Speedup: 3.2395x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00064416s, Speedup: 3.17947x, theoretical occupancy: 1
+# 128 threads per block: 0.000623507s, Speedup: 3.28479x, theoretical occupancy: 1
+# 256 threads per block: 0.000614534s, Speedup: 3.33275x, theoretical occupancy: 1
+# 512 threads per block: 0.000649357s, Speedup: 3.15403x, theoretical occupancy: 1
+# 1024 threads per block: 0.000649606s, Speedup: 3.15282x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.00056711s, Speedup: 3.61145x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000476774s, Speedup: 4.29572x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000693606s, Speedup: 2.95281x, theoretical occupancy: 1
+# 128 threads per block: 0.000478048s, Speedup: 4.28428x, theoretical occupancy: 1
+# 256 threads per block: 0.000671014s, Speedup: 3.05223x, theoretical occupancy: 1
+# 512 threads per block: 0.000527565s, Speedup: 3.88216x, theoretical occupancy: 1
+# 1024 threads per block: 0.000536422s, Speedup: 3.81805x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000205683s, Speedup: 9.9575x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000211891s, Speedup: 9.66576x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000375808s, Speedup: 5.44983x, theoretical occupancy: 1
+# 128 threads per block: 0.000279955s, Speedup: 7.31578x, theoretical occupancy: 1
+# 256 threads per block: 0.000203744s, Speedup: 10.0523x, theoretical occupancy: 1
+# 512 threads per block: 0.000219674s, Speedup: 9.32333x, theoretical occupancy: 1
+# 1024 threads per block: 0.000271091s, Speedup: 7.55498x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-SC-HT
+# Nodes: 2084
+# Edges: 63027
+# CPU TIME: 0.00697327s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000236262s, Speedup: 29.5149x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000276576s, Speedup: 25.2129x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000224154s, Speedup: 31.1093x, theoretical occupancy: 1
+# 128 threads per block: 0.000139878s, Speedup: 49.8524x, theoretical occupancy: 1
+# 256 threads per block: 0.000132474s, Speedup: 52.6389x, theoretical occupancy: 1       <== BEST
+# 512 threads per block: 0.000148429s, Speedup: 46.9806x, theoretical occupancy: 1
+# 1024 threads per block: 0.000146918s, Speedup: 47.4636x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000572166s, Speedup: 12.1875x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000534483s, Speedup: 13.0468x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000619725s, Speedup: 11.2522x, theoretical occupancy: 1
+# 128 threads per block: 0.000609485s, Speedup: 11.4413x, theoretical occupancy: 1
+# 256 threads per block: 0.000799168s, Speedup: 8.72566x, theoretical occupancy: 1
+# 512 threads per block: 0.000563174s, Speedup: 12.3821x, theoretical occupancy: 1
+# 1024 threads per block: 0.000528122s, Speedup: 13.2039x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000891936s, Speedup: 7.81813x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000906842s, Speedup: 7.68962x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000907136s, Speedup: 7.68713x, theoretical occupancy: 1
+# 128 threads per block: 0.000909152s, Speedup: 7.67008x, theoretical occupancy: 1
+# 256 threads per block: 0.000902496s, Speedup: 7.72665x, theoretical occupancy: 1
+# 512 threads per block: 0.00113854s, Speedup: 6.12474x, theoretical occupancy: 1
+# 1024 threads per block: 0.00108401s, Speedup: 6.43287x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000347648s, Speedup: 20.0584x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000140397s, Speedup: 49.6683x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000271098s, Speedup: 25.7224x, theoretical occupancy: 1
+# 128 threads per block: 0.000271763s, Speedup: 25.6594x, theoretical occupancy: 1
+# 256 threads per block: 0.000139027s, Speedup: 50.1576x, theoretical occupancy: 1
+# 512 threads per block: 0.000319699s, Speedup: 21.812x, theoretical occupancy: 1
+# 1024 threads per block: 0.000143699s, Speedup: 48.5269x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-human-gene2
+# Nodes: 14340
+# Edges: 9027024
+# CPU TIME: 4.50084s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.236525s, Speedup: 19.0291x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.38405s, Speedup: 11.7194x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.866015s, Speedup: 5.19719x, theoretical occupancy: 1
+# 128 threads per block: 0.921846s, Speedup: 4.88242x, theoretical occupancy: 1
+# 256 threads per block: 0.834179s, Speedup: 5.39553x, theoretical occupancy: 1
+# 512 threads per block: 0.639164s, Speedup: 7.04176x, theoretical occupancy: 1
+# 1024 threads per block: 0.229137s, Speedup: 19.6426x, theoretical occupancy: 0.6667    <== BEST
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.267628s, Speedup: 16.8175x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.273654s, Speedup: 16.4472x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.317504s, Speedup: 14.1757x, theoretical occupancy: 1
+# 128 threads per block: 0.317206s, Speedup: 14.189x, theoretical occupancy: 1
+# 256 threads per block: 0.289711s, Speedup: 15.5356x, theoretical occupancy: 1
+# 512 threads per block: 0.323626s, Speedup: 13.9075x, theoretical occupancy: 1
+# 1024 threads per block: 0.468974s, Speedup: 9.5972x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.497594s, Speedup: 9.04521x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.43945s, Speedup: 10.242x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.434928s, Speedup: 10.3485x, theoretical occupancy: 1
+# 128 threads per block: 0.432526s, Speedup: 10.4059x, theoretical occupancy: 1
+# 256 threads per block: 0.517626s, Speedup: 8.69516x, theoretical occupancy: 1
+# 512 threads per block: 0.56925s, Speedup: 7.90662x, theoretical occupancy: 1
+# 1024 threads per block: 0.805372s, Speedup: 5.58852x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.242407s, Speedup: 18.5673x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.388007s, Speedup: 11.5999x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.875215s, Speedup: 5.14256x, theoretical occupancy: 1
+# 128 threads per block: 0.914228s, Speedup: 4.9231x, theoretical occupancy: 1
+# 256 threads per block: 0.833337s, Speedup: 5.40098x, theoretical occupancy: 1
+# 512 threads per block: 0.633068s, Speedup: 7.10957x, theoretical occupancy: 1
+# 1024 threads per block: 0.230298s, Speedup: 19.5436x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-MOUSE-GENE
+# Nodes: 45101
+# Edges: 14461095
+# CPU TIME: 7.54229s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.274789s, Speedup: 27.4476x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.333849s, Speedup: 22.5919x, theoretical occupancy: 0.6667
+# 96 threads per block: 1.16653s, Speedup: 6.4656x, theoretical occupancy: 1
+# 128 threads per block: 1.23732s, Speedup: 6.09568x, theoretical occupancy: 1
+# 256 threads per block: 1.02328s, Speedup: 7.37067x, theoretical occupancy: 1
+# 512 threads per block: 0.722092s, Speedup: 10.4451x, theoretical occupancy: 1
+# 1024 threads per block: 0.272976s, Speedup: 27.6298x, theoretical occupancy: 0.6667  <== BEST
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.319175s, Speedup: 23.6305x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.297049s, Speedup: 25.3907x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.363651s, Speedup: 20.7405x, theoretical occupancy: 1
+# 128 threads per block: 0.363106s, Speedup: 20.7716x, theoretical occupancy: 1
+# 256 threads per block: 0.377535s, Speedup: 19.9777x, theoretical occupancy: 1
+# 512 threads per block: 0.45343s, Speedup: 16.6339x, theoretical occupancy: 1
+# 1024 threads per block: 0.723938s, Speedup: 10.4184x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.462885s, Speedup: 16.2941x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.420992s, Speedup: 17.9155x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.413779s, Speedup: 18.2278x, theoretical occupancy: 1
+# 128 threads per block: 0.429491s, Speedup: 17.561x, theoretical occupancy: 1
+# 256 threads per block: 0.507667s, Speedup: 14.8568x, theoretical occupancy: 1
+# 512 threads per block: 0.605631s, Speedup: 12.4536x, theoretical occupancy: 1
+# 1024 threads per block: 0.984584s, Speedup: 7.66038x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.280539s, Speedup: 26.885x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.340949s, Speedup: 22.1215x, theoretical occupancy: 0.6667
+# 96 threads per block: 1.1622s, Speedup: 6.48969x, theoretical occupancy: 1
+# 128 threads per block: 1.23661s, Speedup: 6.09915x, theoretical occupancy: 1
+# 256 threads per block: 1.02733s, Speedup: 7.34165x, theoretical occupancy: 1
+# 512 threads per block: 0.725262s, Speedup: 10.3994x, theoretical occupancy: 1
+# 1024 threads per block: 0.274596s, Speedup: 27.4668x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-WormNet-v3
+# Nodes: 2445
+# Edges: 78736
+# CPU TIME: 0.00253452s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.0002096s, Speedup: 12.0922x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000266598s, Speedup: 9.50688x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000287904s, Speedup: 8.80335x, theoretical occupancy: 1
+# 128 threads per block: 0.00024592s, Speedup: 10.3063x, theoretical occupancy: 1
+# 256 threads per block: 0.000202957s, Speedup: 12.488x, theoretical occupancy: 1
+# 512 threads per block: 0.000232774s, Speedup: 10.8883x, theoretical occupancy: 1
+# 1024 threads per block: 0.000160134s, Speedup: 15.8275x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000334963s, Speedup: 7.56656x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000230778s, Speedup: 10.9825x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00034992s, Speedup: 7.24314x, theoretical occupancy: 1
+# 128 threads per block: 0.000337958s, Speedup: 7.4995x, theoretical occupancy: 1
+# 256 threads per block: 0.000334701s, Speedup: 7.57249x, theoretical occupancy: 1
+# 512 threads per block: 0.000239194s, Speedup: 10.5961x, theoretical occupancy: 1
+# 1024 threads per block: 0.000428998s, Speedup: 5.90799x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000442112s, Speedup: 5.73276x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000577062s, Speedup: 4.39211x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000388826s, Speedup: 6.5184x, theoretical occupancy: 1
+# 128 threads per block: 0.000444384s, Speedup: 5.70345x, theoretical occupancy: 1
+# 256 threads per block: 0.000448774s, Speedup: 5.64765x, theoretical occupancy: 1
+# 512 threads per block: 0.000423859s, Speedup: 5.97963x, theoretical occupancy: 1
+# 1024 threads per block: 0.000424845s, Speedup: 5.96576x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000239622s, Speedup: 10.5771x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000293523s, Speedup: 8.63482x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000118368s, Speedup: 21.4122x, theoretical occupancy: 1
+# 128 threads per block: 0.00028567s, Speedup: 8.87218x, theoretical occupancy: 1
+# 256 threads per block: 0.000286931s, Speedup: 8.8332x, theoretical occupancy: 1
+# 512 threads per block: 0.000122016s, Speedup: 20.772x, theoretical occupancy: 1
+# 1024 threads per block: 0.000114272s, Speedup: 22.1797x, theoretical occupancy: 0.6667 <== BEST
+#############################################
+#############################################
+# Graph: BN-fly
+# Nodes: 1781
+# Edges: 8911
+# CPU TIME: 0.000326714s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000190163s, Speedup: 1.71807x, theoretical occupancy: 0.3333
+# 64 threads per block: 7.06048e-05s, Speedup: 4.62736x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000262349s, Speedup: 1.24534x, theoretical occupancy: 1
+# 128 threads per block: 0.00016425s, Speedup: 1.98913x, theoretical occupancy: 1
+# 256 threads per block: 0.00016023s, Speedup: 2.03903x, theoretical occupancy: 1
+# 512 threads per block: 0.00015241s, Speedup: 2.14366x, theoretical occupancy: 1
+# 1024 threads per block: 0.000152006s, Speedup: 2.14934x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000174662s, Speedup: 1.87055x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000180864s, Speedup: 1.80641x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000180339s, Speedup: 1.81166x, theoretical occupancy: 1
+# 128 threads per block: 8.2688e-05s, Speedup: 3.95117x, theoretical occupancy: 1
+# 256 threads per block: 0.000272698s, Speedup: 1.19808x, theoretical occupancy: 1
+# 512 threads per block: 7.66016e-05s, Speedup: 4.26511x, theoretical occupancy: 1
+# 1024 threads per block: 0.000257203s, Speedup: 1.27026x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000122016s, Speedup: 2.67763x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000100128s, Speedup: 3.26296x, theoretical occupancy: 0.6667
+# 96 threads per block: 9.81248e-05s, Speedup: 3.32958x, theoretical occupancy: 1
+# 128 threads per block: 9.63328e-05s, Speedup: 3.39151x, theoretical occupancy: 1
+# 256 threads per block: 9.64032e-05s, Speedup: 3.38904x, theoretical occupancy: 1
+# 512 threads per block: 9.89376e-05s, Speedup: 3.30222x, theoretical occupancy: 1
+# 1024 threads per block: 9.9872e-05s, Speedup: 3.27133x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000152762s, Speedup: 2.13872x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000237837s, Speedup: 1.37369x, theoretical occupancy: 0.6667
+# 96 threads per block: 4.64128e-05s, Speedup: 7.03931x, theoretical occupancy: 1
+# 128 threads per block: 0.00024039s, Speedup: 1.3591x, theoretical occupancy: 1
+# 256 threads per block: 0.000233178s, Speedup: 1.40114x, theoretical occupancy: 1
+# 512 threads per block: 3.45728e-05s, Speedup: 9.45003x, theoretical occupancy: 1        <== BEST
+# 1024 threads per block: 0.000134298s, Speedup: 2.43276x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BN-mouse
+# Nodes: 213
+# Edges: 16089
+# CPU TIME: 0.000998777s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.00012825s, Speedup: 7.78776x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000387597s, Speedup: 2.57685x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000167795s, Speedup: 5.95236x, theoretical occupancy: 1
+# 128 threads per block: 0.000180992s, Speedup: 5.51835x, theoretical occupancy: 1
+# 256 threads per block: 0.000169389s, Speedup: 5.89636x, theoretical occupancy: 1
+# 512 threads per block: 0.000164755s, Speedup: 6.06219x, theoretical occupancy: 1
+# 1024 threads per block: 0.000165126s, Speedup: 6.04856x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000126662s, Speedup: 7.88535x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00013328s, Speedup: 7.49383x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000225498s, Speedup: 4.42921x, theoretical occupancy: 1
+# 128 threads per block: 0.000223034s, Speedup: 4.47815x, theoretical occupancy: 1
+# 256 threads per block: 0.000210445s, Speedup: 4.74603x, theoretical occupancy: 1
+# 512 threads per block: 0.000216992s, Speedup: 4.60283x, theoretical occupancy: 1
+# 1024 threads per block: 0.000169645s, Speedup: 5.88746x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000413344s, Speedup: 2.41633x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000405133s, Speedup: 2.46531x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00040496s, Speedup: 2.46636x, theoretical occupancy: 1
+# 128 threads per block: 0.000403552s, Speedup: 2.47496x, theoretical occupancy: 1
+# 256 threads per block: 0.000305126s, Speedup: 3.27332x, theoretical occupancy: 1
+# 512 threads per block: 0.000345466s, Speedup: 2.8911x, theoretical occupancy: 1
+# 1024 threads per block: 0.000546093s, Speedup: 1.82895x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000270131s, Speedup: 3.69738x, theoretical occupancy: 0.3333
+# 64 threads per block: 7.2192e-05s, Speedup: 13.835x, theoretical occupancy: 0.6667      <== BEST
+# 96 threads per block: 0.000251072s, Speedup: 3.97805x, theoretical occupancy: 1
+# 128 threads per block: 0.000157466s, Speedup: 6.34283x, theoretical occupancy: 1
+# 256 threads per block: 0.000146989s, Speedup: 6.79492x, theoretical occupancy: 1
+# 512 threads per block: 0.000157677s, Speedup: 6.33433x, theoretical occupancy: 1
+# 1024 threads per block: 0.000271475s, Speedup: 3.67907x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: C500
+# Nodes: 500
+# Edges: 112332
+# CPU TIME: 0.0121547s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000316166s, Speedup: 38.444x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000366323s, Speedup: 33.1803x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000326432s, Speedup: 37.235x, theoretical occupancy: 1
+# 128 threads per block: 0.000490675s, Speedup: 24.7714x, theoretical occupancy: 1
+# 256 threads per block: 0.000336224s, Speedup: 36.1506x, theoretical occupancy: 1
+# 512 threads per block: 0.000468966s, Speedup: 25.9181x, theoretical occupancy: 1
+# 1024 threads per block: 0.000413446s, Speedup: 29.3985x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000809203s, Speedup: 15.0206x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000747059s, Speedup: 16.2701x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000702528s, Speedup: 17.3014x, theoretical occupancy: 1
+# 128 threads per block: 0.000694291s, Speedup: 17.5066x, theoretical occupancy: 1
+# 256 threads per block: 0.000678701s, Speedup: 17.9088x, theoretical occupancy: 1
+# 512 threads per block: 0.000756256s, Speedup: 16.0722x, theoretical occupancy: 1
+# 1024 threads per block: 0.0012279s, Speedup: 9.89879x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.00220465s, Speedup: 5.51322x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00211942s, Speedup: 5.73492x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00213708s, Speedup: 5.68752x, theoretical occupancy: 1
+# 128 threads per block: 0.0021447s, Speedup: 5.66731x, theoretical occupancy: 1
+# 256 threads per block: 0.00213006s, Speedup: 5.70627x, theoretical occupancy: 1
+# 512 threads per block: 0.00244582s, Speedup: 4.96959x, theoretical occupancy: 1
+# 1024 threads per block: 0.00367569s, Speedup: 3.30678x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000560826s, Speedup: 21.6729x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000352179s, Speedup: 34.5128x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000368474s, Speedup: 32.9866x, theoretical occupancy: 1
+# 128 threads per block: 0.000381894s, Speedup: 31.8274x, theoretical occupancy: 1
+# 256 threads per block: 0.000460147s, Speedup: 26.4148x, theoretical occupancy: 1
+# 512 threads per block: 0.000287213s, Speedup: 42.3195x, theoretical occupancy: 1         <== BEST
+# 1024 threads per block: 0.000434349s, Speedup: 27.9837x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: ECON-BEACXC
+# Nodes: 497
+# Edges: 42175
+# CPU TIME: 0.00261246s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000227942s, Speedup: 11.4611x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000206362s, Speedup: 12.6596x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000198854s, Speedup: 13.1376x, theoretical occupancy: 1
+# 128 threads per block: 0.000213824s, Speedup: 12.2178x, theoretical occupancy: 1
+# 256 threads per block: 0.00018512s, Speedup: 14.1123x, theoretical occupancy: 1
+# 512 threads per block: 0.000202598s, Speedup: 12.8948x, theoretical occupancy: 1
+# 1024 threads per block: 0.000296762s, Speedup: 8.80323x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000532467s, Speedup: 4.90633x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00052352s, Speedup: 4.99018x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000521581s, Speedup: 5.00874x, theoretical occupancy: 1
+# 128 threads per block: 0.00049744s, Speedup: 5.25181x, theoretical occupancy: 1
+# 256 threads per block: 0.000687443s, Speedup: 3.80026x, theoretical occupancy: 1
+# 512 threads per block: 0.000502573s, Speedup: 5.19817x, theoretical occupancy: 1
+# 1024 threads per block: 0.000554368s, Speedup: 4.7125x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000843654s, Speedup: 3.0966x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000828019s, Speedup: 3.15507x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000830797s, Speedup: 3.14452x, theoretical occupancy: 1
+# 128 threads per block: 0.000799034s, Speedup: 3.26952x, theoretical occupancy: 1
+# 256 threads per block: 0.000795546s, Speedup: 3.28386x, theoretical occupancy: 1
+# 512 threads per block: 0.000818765s, Speedup: 3.19073x, theoretical occupancy: 1
+# 1024 threads per block: 0.000940211s, Speedup: 2.77859x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000118912s, Speedup: 21.9697x, theoretical occupancy: 0.3333     <== BEST
+# 64 threads per block: 0.000322458s, Speedup: 8.10172x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000329357s, Speedup: 7.93201x, theoretical occupancy: 1
+# 128 threads per block: 0.000272723s, Speedup: 9.57916x, theoretical occupancy: 1
+# 256 threads per block: 0.000310413s, Speedup: 8.41608x, theoretical occupancy: 1
+# 512 threads per block: 0.000203475s, Speedup: 12.8392x, theoretical occupancy: 1
+# 1024 threads per block: 0.00025865s, Speedup: 10.1004x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: ECON-BEAFLW
+# Nodes: 507
+# Edges: 44899
+# CPU TIME: 0.00271303s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.000234899s, Speedup: 11.5498x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000233498s, Speedup: 11.6191x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000205958s, Speedup: 13.1727x, theoretical occupancy: 1
+# 128 threads per block: 0.000233946s, Speedup: 11.5968x, theoretical occupancy: 1
+# 256 threads per block: 0.000192122s, Speedup: 14.1214x, theoretical occupancy: 1
+# 512 threads per block: 0.00012416s, Speedup: 21.8511x, theoretical occupancy: 1         <== BEST
+# 1024 threads per block: 0.000329568s, Speedup: 8.23208x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.000598003s, Speedup: 4.53682x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000580755s, Speedup: 4.67156x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000575546s, Speedup: 4.71384x, theoretical occupancy: 1
+# 128 threads per block: 0.00056784s, Speedup: 4.77781x, theoretical occupancy: 1
+# 256 threads per block: 0.000552493s, Speedup: 4.91053x, theoretical occupancy: 1
+# 512 threads per block: 0.000565997s, Speedup: 4.79337x, theoretical occupancy: 1
+# 1024 threads per block: 0.000636851s, Speedup: 4.26007x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.000918918s, Speedup: 2.95242x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000906912s, Speedup: 2.9915x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000912998s, Speedup: 2.97156x, theoretical occupancy: 1
+# 128 threads per block: 0.000890938s, Speedup: 3.04514x, theoretical occupancy: 1
+# 256 threads per block: 0.000881197s, Speedup: 3.0788x, theoretical occupancy: 1
+# 512 threads per block: 0.000905069s, Speedup: 2.9976x, theoretical occupancy: 1
+# 1024 threads per block: 0.0010007s, Speedup: 2.71114x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.000251379s, Speedup: 10.7926x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000346029s, Speedup: 7.84047x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000313638s, Speedup: 8.65018x, theoretical occupancy: 1
+# 128 threads per block: 0.000259117s, Speedup: 10.4703x, theoretical occupancy: 1
+# 256 threads per block: 0.000191264s, Speedup: 14.1847x, theoretical occupancy: 1
+# 512 threads per block: 0.000305235s, Speedup: 8.88833x, theoretical occupancy: 1
+# 1024 threads per block: 0.000213779s, Speedup: 12.6908x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: SC-PWTK
+# Nodes: 217891
+# Edges: 5653221
+# CPU TIME: 0.083145s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 0.00728966s, Speedup: 11.4059x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00542003s, Speedup: 15.3403x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.0048746s, Speedup: 17.0568x, theoretical occupancy: 1
+# 128 threads per block: 0.00514232s, Speedup: 16.1688x, theoretical occupancy: 1
+# 256 threads per block: 0.00493158s, Speedup: 16.8597x, theoretical occupancy: 1
+# 512 threads per block: 0.00485942s, Speedup: 17.1101x, theoretical occupancy: 1
+# 1024 threads per block: 0.00476083s, Speedup: 17.4644x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 0.00168826s, Speedup: 49.249x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00105284s, Speedup: 78.9722x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000921818s, Speedup: 90.1968x, theoretical occupancy: 1
+# 128 threads per block: 0.00091696s, Speedup: 90.6746x, theoretical occupancy: 1        <== BEST
+# 256 threads per block: 0.000918061s, Speedup: 90.5659x, theoretical occupancy: 1
+# 512 threads per block: 0.000938662s, Speedup: 88.5782x, theoretical occupancy: 1
+# 1024 threads per block: 0.00115582s, Speedup: 71.9359x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 0.00455448s, Speedup: 18.2556x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.0028194s, Speedup: 29.4903x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00268997s, Speedup: 30.9093x, theoretical occupancy: 1
+# 128 threads per block: 0.00267836s, Speedup: 31.0432x, theoretical occupancy: 1
+# 256 threads per block: 0.00267961s, Speedup: 31.0288x, theoretical occupancy: 1
+# 512 threads per block: 0.00270314s, Speedup: 30.7587x, theoretical occupancy: 1
+# 1024 threads per block: 0.00313913s, Speedup: 26.4866x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 0.00954717s, Speedup: 8.70887x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00731607s, Speedup: 11.3647x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00618499s, Speedup: 13.443x, theoretical occupancy: 1
+# 128 threads per block: 0.00577027s, Speedup: 14.4092x, theoretical occupancy: 1
+# 256 threads per block: 0.00534865s, Speedup: 15.5451x, theoretical occupancy: 1
+# 512 threads per block: 0.00542884s, Speedup: 15.3154x, theoretical occupancy: 1
+# 1024 threads per block: 0.00614182s, Speedup: 13.5375x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: SOC-SINAWEIBO
+# Nodes: 58655849
+# Edges: 261199312
+# CPU TIME: 160.583s
+#
+# 1 thread per edge, merge based intersection
+# 32 threads per block: 3.08438s, Speedup: 52.0632x, theoretical occupancy: 0.3333
+# 64 threads per block: 2.49544s, Speedup: 64.3505x, theoretical occupancy: 0.6667
+# 96 threads per block: 2.4707s, Speedup: 64.9948x, theoretical occupancy: 1           <== BEST
+# 128 threads per block: 2.56726s, Speedup: 62.5504x, theoretical occupancy: 1
+# 256 threads per block: 2.81642s, Speedup: 57.0167x, theoretical occupancy: 1
+# 512 threads per block: 2.67273s, Speedup: 60.0821x, theoretical occupancy: 1
+# 1024 threads per block: 3.39984s, Speedup: 47.2325x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, merge based intersection
+# 32 threads per block: 25.8475s, Speedup: 6.21271x, theoretical occupancy: 0.3333
+# 64 threads per block: 26.0817s, Speedup: 6.15693x, theoretical occupancy: 0.6667
+# 96 threads per block: 25.8318s, Speedup: 6.21648x, theoretical occupancy: 1
+# 128 threads per block: 25.5593s, Speedup: 6.28276x, theoretical occupancy: 1
+# 256 threads per block: 26.2067s, Speedup: 6.12755x, theoretical occupancy: 1
+# 512 threads per block: 25.696s, Speedup: 6.24934x, theoretical occupancy: 1
+# 1024 threads per block: 25.5536s, Speedup: 6.28416x, theoretical occupancy: 0.6667
+#
+# 1 warp per node, parallel binary search based intersection
+# 32 threads per block: 3.64355s, Speedup: 44.0732x, theoretical occupancy: 0.3333
+# 64 threads per block: 3.62233s, Speedup: 44.3315x, theoretical occupancy: 0.6667
+# 96 threads per block: 3.60255s, Speedup: 44.5748x, theoretical occupancy: 1
+# 128 threads per block: 3.58664s, Speedup: 44.7726x, theoretical occupancy: 1
+# 256 threads per block: 4.00886s, Speedup: 40.057x, theoretical occupancy: 1
+# 512 threads per block: 5.19413s, Speedup: 30.9163x, theoretical occupancy: 1
+# 1024 threads per block: 9.13016s, Speedup: 17.5882x, theoretical occupancy: 0.6667
+#
+# 1 warp per edge, parallel binary search based intersection
+# 32 threads per block: 6.12245s, Speedup: 26.2285x, theoretical occupancy: 0.3333
+# 64 threads per block: 4.92295s, Speedup: 32.6192x, theoretical occupancy: 0.6667
+# 96 threads per block: 4.85959s, Speedup: 33.0445x, theoretical occupancy: 1
+# 128 threads per block: 5.03184s, Speedup: 31.9134x, theoretical occupancy: 1
+# 256 threads per block: 5.52134s, Speedup: 29.0841x, theoretical occupancy: 1
+# 512 threads per block: 5.28807s, Speedup: 30.367x, theoretical occupancy: 1
+# 1024 threads per block: 6.74797s, Speedup: 23.7972x, theoretical occupancy: 0.6667

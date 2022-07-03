@@ -1,43 +1,42 @@
 cuda_files := tcgpudb.cu, tcgpusa.cu, test.cu
-obj_files := tcgpudb tcgpusa test
+obj_files := tcgpudb test test2 sa1 sa2 sa3 hybrid
 
 tcgpudb:
 	rm -f tcgpudb
-	nvcc -Xcompiler -fopenmp tcgpudb.cu -O3 -o tcgpudb
+	nvcc -Xcompiler -fopenmp -lineinfo tcgpudb.cu -O3 -o tcgpudb
 	./tcgpudb
-
-tcgpusa:
-	rm -f tcgpusa
-	nvcc -Xcompiler -fopenmp tcgpusa.cu -O3 -o tcgpusa 
-	./tcgpusa
 
 test: 
 	rm -f test
-	nvcc -Xcompiler -fopenmp test.cu -O3 -o test 
+	nvcc -Xcompiler -fopenmp -lineinfo test.cu -O3 -o test 
 	./test
 
 test2: 
 	rm -f test2
-	nvcc -Xcompiler -fopenmp test2.cu -O3 -o test2
+	nvcc -Xcompiler -fopenmp -lineinfo test2.cu -O3 -o test2
 	./test2
 
-db:
-	rm -f db
-	nvcc -Xcompiler -fopenmp db.cu -O3 -o db 
-	./db
+sa1:
+	rm -f sa1
+	nvcc -Xcompiler -fopenmp -lineinfo sa1.cu -O3 -o sa1
+	./sa1
 
-sa:
-	rm -f sa
-	nvcc -Xcompiler -fopenmp sa.cu -O3 -o sa
-	./sa
+sa2:
+	rm -f sa2
+	nvcc -Xcompiler -fopenmp -lineinfo sa2.cu -O3 -o sa2
+	./sa2
 
+sa3:
+	rm -f sa3
+	nvcc -Xcompiler -fopenmp -lineinfo sa3.cu -O3 -o sa3
+	./sa3
 
-graph:
-	rm -f graph
-	nvcc -Xcompiler -fopenmp graph.cu -O3 -o graph
-	./graph
+hybrid:
+	rm -f hybrid
+	nvcc -Xcompiler -fopenmp -lineinfo hybrid.cu -O3 -o hybrid
+	./hybrid
 
 clear:
 	rm -f $(obj_files)
 
-.PHONY: tcgpudb tcgpusa test db graph test2 sa
+.PHONY: tcgpudb tcgpusa test db graph test2 sa1 sa2 sa3 hybrid

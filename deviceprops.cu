@@ -1,7 +1,12 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
 
 int main(){
+    ofstream out("deviceprops.txt");
+    streambuf *coutbuf = cout.rdbuf();
+    cout.rdbuf(out.rdbuf());
     cudaDeviceProp prop;
     cudaGetDeviceProperties(&prop, 0);
     cout << "Name: " << prop.name << endl;
@@ -15,4 +20,7 @@ int main(){
     cout << "Global memory bus bandwidth: " << prop.memoryBusWidth/1e9 << " Gb" << endl;
     cout << "Total global memory availale: " << prop.totalGlobalMem/1e9 << " GB" << endl;
     cout << "Warp size in threads: " << prop.warpSize << endl;
+    cout << "Reserved shared memory per block in bytes: " << prop.reservedSharedMemPerBlock << endl;
+    cout << "Shared memory available per block in bytes: " << prop.sharedMemPerBlock << endl;
+    cout << "Shared memory per multiprocessor in bytes: " << prop.sharedMemPerMultiprocessor << endl;
 }

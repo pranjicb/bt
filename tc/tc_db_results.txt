@@ -1,0 +1,75 @@
+#############################################
+#############################################
+# Graph: BIO-CE-PG
+# Nodes: 1871
+# Edges: 47754
+# CPU TIME: 0.00625852s
+#
+# Dense bit vector, 1 warp per node
+# 32 threads per block: 0.000318605s, Speedup: 19.6435x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000175046s, Speedup: 35.7535x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00035799s, Speedup: 17.4824x, theoretical occupancy: 1
+# 128 threads per block: 0.000165683s, Speedup: 37.774x, theoretical occupancy: 1
+# 256 threads per block: 0.000276262s, Speedup: 22.6543x, theoretical occupancy: 1
+# 512 threads per block: 0.000337274s, Speedup: 18.5562x, theoretical occupancy: 1
+# 1024 threads per block: 0.000333978s, Speedup: 18.7393x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-CE-PG
+# Nodes: 1871
+# Edges: 47754
+# CPU TIME: 0.00625852s
+#
+# Dense bit vector, 1 warp per node
+# 32 threads per block: 0.000202637s, Speedup: 30.8854x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000365811s, Speedup: 17.1086x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000263366s, Speedup: 23.7635x, theoretical occupancy: 1
+# 128 threads per block: 0.000170931s, Speedup: 36.6143x, theoretical occupancy: 1
+# 256 threads per block: 0.000376141s, Speedup: 16.6388x, theoretical occupancy: 1
+# 512 threads per block: 0.000230963s, Speedup: 27.0975x, theoretical occupancy: 1
+# 1024 threads per block: 0.000322618s, Speedup: 19.3992x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-CE-PG
+# Nodes: 1871
+# Edges: 47754
+# CPU TIME: 0.00625852s
+#
+# Dense bit vector, 1 warp per node
+# 32 threads per block: 0.000204704s, Speedup: 30.5735x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000367098s, Speedup: 17.0487x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000169222s, Speedup: 36.984x, theoretical occupancy: 1
+# 128 threads per block: 0.000364595s, Speedup: 17.1657x, theoretical occupancy: 1
+# 256 threads per block: 0.000176646s, Speedup: 35.4296x, theoretical occupancy: 1
+# 512 threads per block: 0.000336813s, Speedup: 18.5816x, theoretical occupancy: 1
+# 1024 threads per block: 0.000324166s, Speedup: 19.3065x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-CE-PG
+# Nodes: 1871
+# Edges: 47754
+# CPU TIME: 0.00625852s
+#
+# Dense bit vector, 1 warp per node
+# 32 threads per block: 0.000200205s, Speedup: 31.2606x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.00037703s, Speedup: 16.5995x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.00017367s, Speedup: 36.0368x, theoretical occupancy: 1
+# 128 threads per block: 0.000374464s, Speedup: 16.7133x, theoretical occupancy: 1
+# 256 threads per block: 0.000193133s, Speedup: 32.4053x, theoretical occupancy: 1
+# 512 threads per block: 0.00034263s, Speedup: 18.2661x, theoretical occupancy: 1
+# 1024 threads per block: 0.000336192s, Speedup: 18.6159x, theoretical occupancy: 0.6667
+#############################################
+#############################################
+# Graph: BIO-CE-PG
+# Nodes: 1871
+# Edges: 47754
+# CPU TIME: 0.00625852s
+#
+# Dense bit vector, 1 warp per node
+# 32 threads per block: 0.000311226s, Speedup: 20.1093x, theoretical occupancy: 0.3333
+# 64 threads per block: 0.000297382s, Speedup: 21.0454x, theoretical occupancy: 0.6667
+# 96 threads per block: 0.000275578s, Speedup: 22.7106x, theoretical occupancy: 1
+# 128 threads per block: 0.000189485s, Speedup: 33.0291x, theoretical occupancy: 1
+# 256 threads per block: 0.00030391s, Speedup: 20.5933x, theoretical occupancy: 1
+# 512 threads per block: 0.000444653s, Speedup: 14.0751x, theoretical occupancy: 1
+# 1024 threads per block: 0.000237158s, Speedup: 26.3896x, theoretical occupancy: 0.6667

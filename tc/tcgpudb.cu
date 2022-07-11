@@ -49,7 +49,7 @@ __device__ T intersectCount(int n, T *u, T *v){
     return count;
 }
 
-__global__ void tcgpudb(int n1, int n2, T *sum, T *g, int numbits){
+/*__global__ void tcgpudb(int n1, int n2, T *sum, T *g, int numbits){
     int u = blockIdx.x;
     int tid = threadIdx.x;
     int gtid = blockIdx.x * blockDim.x + tid;
@@ -60,12 +60,36 @@ __global__ void tcgpudb(int n1, int n2, T *sum, T *g, int numbits){
         T tmp3 = tmp1 & tmp2;
         T v = i*numbits+tid;
         T v_neigh = v*n2;
-        if(tmp2 == tmp3 && u < v){
+        if(tmp2 == tmp3){
             T count = intersectCount(n2, &g[u_neigh], &g[v_neigh]);
             sum[u*n1+v] += count;
         }
         
     }
+}*/
+
+__global__ void tcgpudb(int n1, int n2, T *sum, T *g){
+    T tid = blockDim.x * blockIdx.x + threadIdx.x;
+    T u = tid / 32;
+    T lid = tid % 32;
+    T u_neigh = n2*u;
+    T count = 0;
+    for(unsigned int i = 0; i < n2; i++){
+        T tmp1 = g[u_neigh+i];
+        T tmp2 = (1ULL << lid);
+        T tmp3 = tmp1 & tmp2;
+        T v = 32*i+lid;
+        T v_neigh = n2*v;
+        if(tmp2 == tmp3){
+            for(unsigned int k = 0; k < n2; k++){
+                count += __popcll(g[u_neigh+k] & g[v_neigh+k]);
+            }
+        }
+    }
+    for(int offset = 16; offset > 0; offset /= 2){
+        count += __shfl_down_sync(0xffffffff, count, offset);
+    }
+    sum[u] = count;
 }
 
 void tccpu(int n, T *sum, std::vector<std::vector<int>> g){
@@ -94,9 +118,9 @@ void tccpu(int n, T *sum, std::vector<std::vector<int>> g){
 
 
 int numbits = sizeof(T) * 8;
-unsigned int N = N_BIOMOUSEGENE;
-unsigned int E = E_BIOMOUSEGENE;
-std::ifstream INPUT(biomousegene_path);
+unsigned int N = N_C500;
+unsigned int E = E_C500;
+std::ifstream INPUT(c500_path);
 
 int main(){
     bool *g;
@@ -109,11 +133,17 @@ int main(){
     for(int i = 0; i < E; i++){
         int u,v;
         std::string w;
-        INPUT >> u >> v >> w;
-        u--;
-        v--;
-        g[N*u+v] = true;
-        g[N*v+u] = true;
+        INPUT >> u >> v;
+        if(u < v){
+            --u;
+            --v;
+            g[N*u+v] = true;
+        }
+        else if(v < u){
+            --u;
+            --v;
+            g[N*v+u] = true;
+        }
     }
     //remove self cycles
     for(T i = 0; i < N; i++){
@@ -159,44 +189,38 @@ int main(){
     }
 
     T *sumdb;
-    cudaMallocManaged(&sumdb, N*N*sizeof(T));
-    for(int i = 0; i < N*N; i++){
+    cudaMallocManaged(&sumdb, N*sizeof(T));
+    for(int i = 0; i < N; i++){
         sumdb[i] = 0;
     }
     cudaEvent_t dbstart, dbend;
     cudaEventCreate(&dbstart);
     cudaEventCreate(&dbend);
 
-    int threadsPerBlockdb = numbits;
-    int blocksPerGriddb = (threadsPerBlockdb*N + threadsPerBlockdb - 1) / threadsPerBlockdb;
+    int threadsPerBlockdb = 128;
+    int blocksPerGriddb = (32*N + threadsPerBlockdb - 1) / threadsPerBlockdb;
 
     cudaEventRecord(dbstart);
-    tcgpudb<<<blocksPerGriddb, threadsPerBlockdb>>>(N,N2,sumdb,g2, numbits);
+    tcgpudb<<<blocksPerGriddb, threadsPerBlockdb>>>(N,N2,sumdb,g2);
     cudaEventRecord(dbend);
 
     cudaDeviceSynchronize();
     cudaEventSynchronize(dbend);
     T resdb = 0;
-    for(int i = 0; i < N*N; i++){
+    for(int i = 0; i < N; i++){
         resdb += sumdb[i];
     }
-    resdb /= 3;
     float timedb = 0;
     cudaEventElapsedTime(&timedb, dbstart, dbend);
 
 
-    //make sparse array for CPU
-    std::vector<std::vector<int>> gsa;
-    for(T i = 0; i < N; i++){
-        std::vector<int> u;
-        for(T j = 0; j < N; j++){
-            if(g[N*i+j]) u.push_back(j);
-        }
-        gsa.push_back(u);
-    }
+    
 
 
   
     std::cout << "GPU DB RES:   " << resdb << std::endl;
     std::cout << "GPU DB TIME:  " << timedb/1000.0 << "s" << std::endl;
+    for(int i = 0; i < 500; i++){
+        std::cout << g2[i] << std::endl;
+    }
 }

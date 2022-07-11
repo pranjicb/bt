@@ -12,3 +12,4 @@ Warp size in threads: 32
 Reserved shared memory per block in bytes: 1024
 Shared memory available per block in bytes: 49152
 Shared memory per multiprocessor in bytes: 102400
+L2 cache size in bytes: 4194304

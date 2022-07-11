@@ -12,6 +12,7 @@
 //u v, starts with 0   type = 2
 //u v, starts with 1   type = 3
 
+
 struct GraphReader{
     std::string name;
     unsigned int N;
@@ -23,13 +24,131 @@ struct GraphReader{
     double time;
     GraphReader(std::string name, unsigned int N, unsigned int E, unsigned int type, std::string filepath, unsigned long long res, double time);
     void read();
+    void readSparse();
+
+    //DENSE IMPLEMENTATION
+    void readDense();
+    unsigned int *g_dense;
+    unsigned int n1 = N;
+    unsigned int n2 = 0;
+    
+
+    //METRICS
+    unsigned int maxdeg = 0;
+    unsigned long long n_sq = 1ULL * N * N;
+    double density = 1.0*E/n_sq;
+    unsigned long long degsum = 0;
+    double avgdeg = 0.0;
+    unsigned int median = 0;
+    unsigned int mode = 0; 
+    double mean_sigma = 0.0;
+    double mode_sigma = 0.0;
+    std::vector<unsigned int> degs = std::vector<unsigned int>(N,0);
+
+    //SELECTED ALGORITHM
+    //1 thread per edge = 0 ==> default case
+    //1 warp node, merge = 1 ==>
+    //1 warp per node, binary search = 2
+    //1 warp per edge = 3
+    //2 kernels hybrid approach = 4
+    //Dense implementation = 5
+    unsigned int alg = 0; //1 thread per edge by default
 };
 
 GraphReader::GraphReader(std::string name, unsigned int nodes, unsigned int edges, unsigned int t, std::string path, unsigned long long trueres, double cputime) : 
 name(name), N(nodes), E(edges), type(t), filepath(path), res(trueres), time(cputime){}
 
+void::GraphReader::read(){
+    if(density >= 0.03){
+        alg = 5;
+        readDense();
+    }
+    else{
+        readSparse();
+    }
+}
 
-void GraphReader::read(){
+void GraphReader::readDense(){
+    if(n1 % 32 == 0){
+        n2 = n1 / 32;
+    }
+    else{
+        n2 = (n1 + 31) / 32;
+    }
+    cudaMallocManaged(&g_dense, n1*n2*sizeof(unsigned int));
+    for(unsigned int i = 0; i < n1*n2; i++){
+        g_dense[i] = 0ULL;
+    }
+    std::ifstream INPUT(filepath);
+    unsigned int u,v;
+    std::string c;
+    if(type == 0){
+        while(INPUT >> u >> v >> c){
+            if(u < v){
+                unsigned int idx = v / 32;
+                unsigned int shamt = v % 32;
+                g_dense[n2*u+idx] |= (1ULL << shamt); 
+            }
+            else if(v < u){
+                unsigned int idx = u / 32;
+                unsigned int shamt = u % 32;
+                g_dense[n2*v+idx] |= (1ULL << shamt);  
+            }
+        }
+    }
+    else if(type == 1){
+        while(INPUT >> u >> v >> c){
+            if(u < v){
+                --u;
+                --v;
+                unsigned int idx = v / 32;
+                unsigned int shamt = v % 32;
+                g_dense[n2*u+idx] |= (1ULL << shamt); 
+            }
+            else if(v < u){
+                --u;
+                --v;
+                unsigned int idx = u / 32;
+                unsigned int shamt = u % 32;
+                g_dense[n2*v+idx] |= (1ULL << shamt);   
+            }
+        }
+    }
+    else if(type == 2){
+        while(INPUT >> u >> v){
+            if(u < v){
+                unsigned int idx = v / 32;
+                unsigned int shamt = v % 32;
+                g_dense[n2*u+idx] |= (1ULL << shamt); 
+            }
+            else if(v < u){
+                unsigned int idx = u / 32;
+                unsigned int shamt = u % 32;
+                g_dense[n2*v+idx] |= (1ULL << shamt);  
+            }
+        }
+    }
+    else if(type == 3){
+        while(INPUT >> u >> v){
+            if(u < v){
+                --u;
+                --v;
+                unsigned int idx = v / 32;
+                unsigned int shamt = v % 32;
+                g_dense[n2*u+idx] |= (1ULL << shamt); 
+            }
+            else if(v < u){
+                --u;
+                --v;
+                unsigned int idx = u / 32;
+                unsigned int shamt = u % 32;
+                g_dense[n2*v+idx] |= (1ULL << shamt);   
+            }
+        }
+    }
+}
+
+void GraphReader::readSparse(){
     for(unsigned int i = 0; i < N; i++){
         std::vector<unsigned int> u;
         g.push_back(u);
@@ -42,15 +161,23 @@ void GraphReader::read(){
         while(INPUT >> u >> v >> c){
             if(u < v){
                 g.at(u).push_back(v);
+                degs.at(u)++;
+                degs.at(v)++;
             }
             else if(v < u){
                 g.at(v).push_back(u);
+                degs.at(u)++;
+                degs.at(v)++;
             }
         }
         for(unsigned int i = 0; i < N; i++){
             std::set<unsigned int> s(g.at(i).begin(), g.at(i).end());
             g.at(i).assign(s.begin(), s.end());
             count += g.at(i).size();
+            degsum += degs.at(i);
+            if(maxdeg < degs.at(i)){
+                maxdeg = degs.at(i);
+            }
         }
         E = count;
     } 
@@ -60,17 +187,25 @@ void GraphReader::read(){
                 --u;
                 --v;
                 g.at(u).push_back(v);
+                degs.at(u)++;
+                degs.at(v)++;
             }
             else if(v < u){
                 --u;
                 --v;
                 g.at(v).push_back(u);
+                degs.at(u)++;
+                degs.at(v)++;
             }
         }
         for(unsigned int i = 0; i < N; i++){
             std::set<unsigned int> s(g.at(i).begin(), g.at(i).end());
             g.at(i).assign(s.begin(), s.end());
             count += g.at(i).size();
+            degsum += degs.at(i);
+            if(maxdeg < degs.at(i)){
+                maxdeg = degs.at(i);
+            }
         }
         E = count;
     }
@@ -78,15 +213,23 @@ void GraphReader::read(){
         while(INPUT >> u >> v){
             if(u < v){
                 g.at(u).push_back(v);
+                degs.at(u)++;
+                degs.at(v)++;
             }
             else if(v < u){
                 g.at(v).push_back(u);
+                degs.at(u)++;
+                degs.at(v)++;
             }
         }
         for(unsigned int i = 0; i < N; i++){
             std::set<unsigned int> s(g.at(i).begin(), g.at(i).end());
             g.at(i).assign(s.begin(), s.end());
             count += g.at(i).size();
+            degsum += degs.at(i);
+            if(maxdeg < degs.at(i)){
+                maxdeg = degs.at(i);
+            }
         }
         E = count;
     }
@@ -96,20 +239,71 @@ void GraphReader::read(){
                 --u;
                 --v;
                 g.at(u).push_back(v);
+                degs.at(u)++;
+                degs.at(v)++;
             }
             else if(v < u){
                 --u;
                 --v;
                 g.at(v).push_back(u);
+                degs.at(u)++;
+                degs.at(v)++;
             }
         }
         for(unsigned int i = 0; i < N; i++){
             std::set<unsigned int> s(g.at(i).begin(), g.at(i).end());
             g.at(i).assign(s.begin(), s.end());
             count += g.at(i).size();
+            degsum += degs.at(i);
+            if(maxdeg < degs.at(i)){
+                maxdeg = degs.at(i);
+            }
         }
         E = count;
     }
+
+    //metrics
+    //average degree
+    avgdeg = 1.0*degsum/N;
+
+    //mode
+    std::vector<unsigned int> histogram(maxdeg+1,0);
+    for(unsigned int i = 0; i < N; i++){
+        histogram.at(degs.at(i))++;
+    }
+    mode = std::distance(histogram.begin(), std::max_element(histogram.begin(), histogram.end()));
+
+    //median
+    auto m = degs.begin() + degs.size()/2;
+    std::nth_element(degs.begin(), m, degs.end());
+    median = degs.at(degs.size()/2);
+
+    //mean and mode variance
+    for(unsigned int i = 0; i < N; i++){
+        mean_sigma += abs(degs.at(i)-avgdeg);
+        mode_sigma += abs((degs.at(i)-mode)*1.0);
+    }
+    mean_sigma /= N;
+    mode_sigma /= N;
+
+
+    //SELECTED ALGORITHM
+    //1 thread per edge = 0 
+    //1 warp node, merge = 1 
+    //1 warp per node, binary search = 2
+    //1 warp per edge = 3
+    //2 kernels hybrid approach = 4
+    if(mode < 32){
+        alg = 0;
+    }
+    else{
+        if(avgdeg >= median-5 && avgdeg <= median+5 && avgdeg >= mode-5 &&
+           avgdeg <= mode+5 && median >= mode-5 && median <= mode+5)
+        {
+            alg = 1;
+        }
+    }
+    
 }
 
 GraphReader BIOCEPG = GraphReader("BIO-CE-PG", 1871, 47754, 0, "../../../datasets/biological/bio-CE-PG/bio-CE-PG.edges", 784919, 0.00625852);

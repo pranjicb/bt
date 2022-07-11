@@ -129,16 +129,41 @@ __global__ void sa4(T N, T E, T *nodes, T *edges1, T*edges2, T *sum){
     }
     sum[wid] = count;
 }
+
+__global__ void tcgpudb(int n1, int n2, T *sum, T *g){
+    T tid = blockDim.x * blockIdx.x + threadIdx.x;
+    T u = tid / 32;
+    T lid = tid % 32;
+    T u_neigh = n2*u;
+    T count = 0;
+    for(unsigned int i = 0; i < n2; i++){
+        T tmp1 = g[u_neigh+i];
+        T tmp2 = (1ULL << lid);
+        T tmp3 = tmp1 & tmp2;
+        T v = 32*i+lid;
+        T v_neigh = n2*v;
+        if(tmp2 == tmp3){
+            for(unsigned int k = 0; k < n2; k++){
+                count += __popcll(g[u_neigh+k] & g[v_neigh+k]);
+            }
+        }
+    }
+    for(int offset = 16; offset > 0; offset /= 2){
+        count += __shfl_down_sync(0xffffffff, count, offset);
+    }
+    sum[u] = count;
+}
+
 std::vector<unsigned int> blockSizes = {32, 64, 96, 128, 256, 512, 1024};
 std::vector<double> occupancies = {0.3333, 0.6667, 1.0, 1.0, 1.0, 1.0, 0.6667};
 int main(){
-    std::ofstream out("tc_results.txt");
+    std::ofstream out("tc_db_results.txt");
     std::streambuf *coutbuf = std::cout.rdbuf();
     std::cout.rdbuf(out.rdbuf());
-    for(int i = 0; i < testGraphs.size(); i++){
+    for(int i = 0; i < testGraphs.size()-10; i++){
         std::cout << "#############################################" << std::endl;
         std::cout << "#############################################" << std::endl;
-        GraphReader graph = testGraphs.at(i);
+        GraphReader graph = BIOCEPG;
         graph.read();
         
         std::cout << "# Graph: " << graph.name << std::endl;  
@@ -146,7 +171,7 @@ int main(){
         std::cout << "# Edges: " << graph.E << std::endl;
         std::cout << "# CPU TIME: " << graph.time << "s" <<std::endl;
 
-        T *edges1, *edges2, *nodes, *sum;
+        /*T *edges1, *edges2, *nodes, *sum;
         cudaMallocManaged(&edges1, graph.E*sizeof(T));
         cudaMallocManaged(&edges2, graph.E*sizeof(T));
         cudaMallocManaged(&nodes, (graph.N+1)*sizeof(T));
@@ -341,6 +366,43 @@ int main(){
 
         cudaFree(edges1);
         cudaFree(edges2);
-        cudaFree(nodes);
+        cudaFree(nodes);*/
+        std::cout << "#" << std::endl;
+        std::cout << "# Dense bit vector, 1 warp per node" << std::endl;
+        for(int j = 0; j < blockSizes.size(); j++){
+            double db_time = 0.0;
+            cudaEvent_t start, end;
+            cudaEventCreate(&start);
+            cudaEventCreate(&end);
+
+            unsigned int threadsPerBlock = blockSizes.at(j);
+            unsigned int blocksPerGrid = (32*graph.n1 + threadsPerBlock - 1) / threadsPerBlock;
+            for(int k = 0; k < 5; k++){
+                T *sum;
+                cudaMallocManaged(&sum, graph.n1*sizeof(T));
+                for(int l = 0; l < graph.n1; l++){
+                    sum[l] = 0;
+                }
+                cudaEventRecord(start);
+                tcgpudb<<<blocksPerGrid, threadsPerBlock>>>(graph.n1,graph.n2,sum,graph.g_dense);
+                cudaEventRecord(end);
+
+                cudaDeviceSynchronize();
+                cudaEventSynchronize(end);
+                u_int64_t res = 0;
+                for(int l = 0; i < graph.n1; l++){
+                    res += sum[l];
+                }
+                float time = 0;
+                cudaEventElapsedTime(&time, start, end);
+                time /= 1000.0;
+                db_time += time;
+
+                cudaFree(sum);
+            }
+            db_time /= 5.0;
+            std::cout << "# " << threadsPerBlock << " threads per block: " << db_time << "s, Speedup: " << graph.time/db_time <<
+             "x, theoretical occupancy: " << occupancies.at(j) << std::endl;
+        }
     }
 }

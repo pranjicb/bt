@@ -23,4 +23,5 @@ int main(){
     cout << "Reserved shared memory per block in bytes: " << prop.reservedSharedMemPerBlock << endl;
     cout << "Shared memory available per block in bytes: " << prop.sharedMemPerBlock << endl;
     cout << "Shared memory per multiprocessor in bytes: " << prop.sharedMemPerMultiprocessor << endl;
+    cout << "L2 cache size in bytes: " << prop.l2CacheSize << endl;
 }

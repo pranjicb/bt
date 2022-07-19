@@ -19,7 +19,7 @@ struct GraphReader{
     unsigned int E;
     unsigned int type;
     std::string filepath;
-    std::vector<std::vector<unsigned int>> g = std::vector<std::vector<unsigned int>>();
+    std::vector<std::vector<unsigned int>> g;
     unsigned long long res;
     double time;
     GraphReader(std::string name, unsigned int N, unsigned int E, unsigned int type, std::string filepath, unsigned long long res, double time);

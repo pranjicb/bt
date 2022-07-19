@@ -36,7 +36,12 @@ hybrid:
 	nvcc -Xcompiler -fopenmp -lineinfo hybrid.cu -O3 -o hybrid
 	./hybrid
 
+tc:
+	rm -f triangleCount
+	nvcc -Xcompiler -fopenmp -lineinfo triangleCount.cu -O3 -o triangleCount
+	./triangleCount
+
 clear:
 	rm -f $(obj_files)
 
-.PHONY: tcgpudb tcgpusa test db graph test2 sa1 sa2 sa3 hybrid
+.PHONY: tcgpudb tcgpusa test db graph test2 sa1 sa2 sa3 hybrid tc
